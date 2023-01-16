@@ -11,10 +11,6 @@ import RepositoriesContext from "../../contexts/RepositoriesContext";
 import useMakeHeaderRightChangedByRepositoriesAndSettingMode from "../../hooks/repositories/useMakeHeaderRightChangedByRepositoriesAndSettingMode";
 import useIfRepositoriesLengthZeroThenSettingModeFalse from "../../hooks/repositories/useIfRepositoriesLengthZeroThenSettingModeFalse";
 
-const Separator = styled.View`
-  height: 2px;
-  background-color: rgba(200,200,200,0.5);
-`;
 const BottomContainer = styled.View`
   align-items: center;
 `;
@@ -50,7 +46,6 @@ const Repositories = (props:RepositoriesProps) => {
           data={repositories}
           renderItem={({item})=><RepositorySummary {...item} fromWhere="Repositories" settingMode={settingMode}/>}
           keyExtractor={(item)=>item.id}
-          ItemSeparatorComponent={()=><Separator/>}
         />
         {!settingMode && <BottomContainer>
           <GoToSearchBtn size="small" />

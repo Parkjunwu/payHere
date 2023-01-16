@@ -2,7 +2,7 @@ import { githubApiSearchQueryType, issueType, repositoryType } from "../type/git
 import { rawGithubRepositoriesDataType, rawGithubIssueDataType } from "../type/githubApiRawDataType";
 import octokit from "./octokit";
 
-const baseGetNumber = "15";
+const baseGetNumber = "30";
 const basePageNumber = "1";
 
 const getRepositoriesIssues: githubApiSearchQueryType<issueType> = async ({

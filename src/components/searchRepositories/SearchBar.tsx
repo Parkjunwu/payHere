@@ -3,10 +3,11 @@ import styled from "styled-components/native";
 import { DarkModeAppliedTextInput } from "../DarkModeAppliedStyledComponents";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import useBackgroundAndTextAndPlaceHolderColor from "../../hooks/useBackgroundAndTextAndPlaceHolderColor";
+import { isIOS } from "../../logics/getDevicePlatform";
 
 const SearchBarContainer = styled.View`
   background-color: grey;
-  padding: 10px 10px;
+  padding: ${isIOS ? "10px" : "1px 10px"};
   border-radius: 25px;
   flex-direction: row;
   align-items: center;

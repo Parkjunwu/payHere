@@ -15,7 +15,7 @@ const MainNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerTransparent: true,
+        headerShadowVisible: false,
         headerTintColor: textColor,
         headerStyle: {
           backgroundColor,
