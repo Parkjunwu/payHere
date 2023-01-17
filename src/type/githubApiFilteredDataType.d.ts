@@ -4,20 +4,25 @@ type storedRepositoriesInfoType = {
   avatar_url: string;
 }[];
 
-type githubApiSearchQueryType<T> = (props:{
-  q: string;
+type githubApiSearchQueryParamsTypeWithoutPage = {
+  queryString: string;
   sort?: string;
   order?: string;
-  per_page?: string;
-  page?: string;
+  per_page?: number;
   storedRepositoriesInfo?: storedRepositoriesInfoType;
-}) => Promise<{
+};
+
+type githubApiSearchQueryParamsType = {
+  page?: number;
+} & githubApiSearchQueryParamsTypeWithoutPage;
+
+type githubApiSearchQueryType<T> = (props:githubApiSearchQueryParamsType) => Promise<{
   isLastPage: boolean;
   data: Array<T>;
 }>;
 
 type issueType = {
-  id: string;
+  id: number;
   repositoryName: string;
   userName: string;
   avatar_url: string;
@@ -25,23 +30,24 @@ type issueType = {
   title: string;
   state: string;
   created_at: string;
-  comments: string;
-  score: string;
-  reactions: string;
+  comments: number;
+  score: number;
+  reactions: number;
 };
 
 type repositoryType = {
-  id: string;
+  id: number;
   repositoryName: string;
   userName: string;
   avatar_url: string;
   html_url: string;
   description: string;
-  open_issues: string;
+  open_issues: number;
 };
 
 export type {
   storedRepositoriesInfoType,
+  githubApiSearchQueryParamsTypeWithoutPage,
   githubApiSearchQueryType,
   issueType,
   repositoryType,

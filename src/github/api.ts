@@ -2,33 +2,39 @@ import { githubApiSearchQueryType, issueType, repositoryType } from "../type/git
 import { rawGithubRepositoriesDataType, rawGithubIssueDataType } from "../type/githubApiRawDataType";
 import octokit from "./octokit";
 
-const baseGetNumber = "30";
-const basePageNumber = "1";
+const baseGetNumber = 30;
+const basePageNumber = 1;
+
+const endPoint = {
+  getSearchIssues: 'GET /search/issues{?q,sort,order,per_page,page}',
+  getSearchRepositories: 'GET /search/repositories{?q,sort,order,per_page,page}',
+};
 
 const getRepositoriesIssues: githubApiSearchQueryType<issueType> = async ({
-  q,
+  queryString,
   sort,
   order,
   per_page = baseGetNumber,
   page = basePageNumber,
   storedRepositoriesInfo,
 }) => {
-  if(!q) return {
+  if(!queryString) return {
     isLastPage: true,
     data: [],
   };
 
-  const issueData: rawGithubIssueDataType = await octokit.request('GET /search/issues{?q,sort,order,per_page,page}', {
-    q,
+  const rawIssueData: rawGithubIssueDataType = await octokit.request(endPoint.getSearchIssues, {
+    q: queryString,
     ...(sort && {sort}),
     ...(order && {order}),
-    per_page,
-    page,
+    per_page: per_page+"",
+    page: page+"",
   });
 
-  const { data: { total_count, items }} = issueData;
+  const { data: { total_count, items }} = rawIssueData;
 
-  const isLastPage = total_count <= Number(per_page)*Number(page);
+  const isLastPage = getIsLastPage(total_count,per_page,page);
+
   const extractedData = items.map((item) => {
     const { id, html_url, title, user:{ login, avatar_url }, state, created_at, comments, score, reactions:{ total_count } } = item;
 
@@ -36,7 +42,7 @@ const getRepositoriesIssues: githubApiSearchQueryType<issueType> = async ({
 
     const repositoryAvatarUrl = storedRepositoriesInfo?.find(repository=>repository.repositoryName === thisRepositoryName)?.avatar_url ?? "";
 
-    return { id: id+"", html_url, title, repositoryName:thisRepositoryName, userName:login, avatar_url: repositoryAvatarUrl, state, created_at, comments: comments+"", score: score+"", reactions:total_count+"" };
+    return { id: id, html_url, title, repositoryName: thisRepositoryName, userName: login, avatar_url: repositoryAvatarUrl, state, created_at, comments: comments, score: score, reactions:total_count };
   });
 
   return {
@@ -46,26 +52,27 @@ const getRepositoriesIssues: githubApiSearchQueryType<issueType> = async ({
 };
 
 const searchRepositoriesByQueryString: githubApiSearchQueryType<repositoryType> = async({
-  q,
+  queryString,
   sort,
   order,
   per_page = baseGetNumber,
   page = basePageNumber,
 }) => {
-  const repositoryData: rawGithubRepositoriesDataType = await octokit.request('GET /search/repositories{?q,sort,order,per_page,page}', {
-    q,
+  const rawRepositoryData: rawGithubRepositoriesDataType = await octokit.request(endPoint.getSearchRepositories, {
+    q: queryString,
     ...(sort && {sort}),
     ...(order && {order}),
-    per_page,
-    page,
+    per_page: per_page+"",
+    page: page+"",
   });
 
-  const { data: { total_count, items }} = repositoryData;
+  const { data: { total_count, items }} = rawRepositoryData;
 
-  const isLastPage = total_count <= Number(per_page)*Number(page);
+  const isLastPage = getIsLastPage(total_count,per_page,page);
+
   const extractedData = items.map((item) => {
     const { id, name, owner: { login, avatar_url }, html_url, description, open_issues, } = item;
-    return { id: id+"", repositoryName:name, userName:login, avatar_url, html_url, description, open_issues: open_issues+"", };
+    return { id: id, repositoryName:name, userName:login, avatar_url, html_url, description, open_issues: open_issues, };
   });
 
   return {
@@ -73,6 +80,8 @@ const searchRepositoriesByQueryString: githubApiSearchQueryType<repositoryType> 
     data: extractedData,
   };
 };
+
+const getIsLastPage = (total_count:number,per_page:number,page:number) => total_count <= per_page*page;
 
 export {
   getRepositoriesIssues,

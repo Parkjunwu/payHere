@@ -1,18 +1,26 @@
 import { useCallback, useRef, useState } from "react";
-import { githubApiSearchQueryType, storedRepositoriesInfoType } from "../type/githubApiFilteredDataType";
+import { githubApiSearchQueryParamsTypeWithoutPage, githubApiSearchQueryType } from "../type/githubApiFilteredDataType";
 
-type useGithubQueryProps = <T> (
+type useGithubQueryParamsProps<T> = {
   query: githubApiSearchQueryType<T>,
-  queryString: string,
-  storedRepositoriesInfo?: storedRepositoriesInfoType,
-) => {
+} & githubApiSearchQueryParamsTypeWithoutPage;
+
+type useGithubQueryProps = <T> (props:useGithubQueryParamsProps<T>) => {
   githubData: Array<T>;
   loading: boolean;
   firstFetch: () => Promise<void>;
   fetchMore: () => Promise<void>;
 };
 
-const useGithubQuery: useGithubQueryProps = (query,queryString,storedRepositoriesInfo) => {
+const useGithubQuery: useGithubQueryProps = ({
+  query,
+  queryString,
+  sort,
+  order,
+  per_page,
+  storedRepositoriesInfo,
+}) => {
+  
   const [firstLoading,setFirstLoading] = useState(false); // 얘는 렌더링 바뀌어야함
   const paginationNumber = useRef(1);
   const paginationLoading = useRef(false);
@@ -20,8 +28,11 @@ const useGithubQuery: useGithubQueryProps = (query,queryString,storedRepositorie
   const [githubData,setGithubData] = useState<any[]>([]);
 
   const queryWithPagination = () => query({
-    q: queryString,
-    page: paginationNumber.current + "",
+    queryString,
+    page: paginationNumber.current,
+    ...(sort && {sort}),
+    ...(order && {order}),
+    ...(per_page && {per_page}),
     ...(storedRepositoriesInfo && {storedRepositoriesInfo}),
   });
 
@@ -45,7 +56,6 @@ const useGithubQuery: useGithubQueryProps = (query,queryString,storedRepositorie
 
   const fetchMore = useCallback(
     async() => {
-      console.log("fetchMore!")
       if(paginationLoading.current || fetchAllData.current) return;
       paginationLoading.current = true;
       paginationNumber.current += 1;

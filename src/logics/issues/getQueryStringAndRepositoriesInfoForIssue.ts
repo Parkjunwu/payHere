@@ -1,6 +1,7 @@
 import { repositoryType, storedRepositoriesInfoType } from "../../type/githubApiFilteredDataType";
 
 const getQueryStringAndRepositoriesInfoForIssue = (repositories: repositoryType[]) => {
+  
   let queryString = "";
   repositories.forEach(repository => {
     const { repositoryName, userName } = repository;

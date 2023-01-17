@@ -19,7 +19,10 @@ const SearchRepositories = (props:SearchRepositoriesProps) => {
     githubData,
     firstFetch,
     fetchMore,
-  } = useGithubQuery(searchRepositoriesByQueryString,keyword);
+  } = useGithubQuery({
+    query: searchRepositoriesByQueryString,
+    queryString: keyword,
+  });
 
   const onSubmitSearchByKeyword = () => firstFetch();
 
@@ -36,10 +39,10 @@ const SearchRepositories = (props:SearchRepositoriesProps) => {
           />
           <FlatList
             data={githubData}
-            keyExtractor={(item)=>item.id}
+            keyExtractor={(item)=>item.id+""}
             renderItem={({item}) => <RepositorySummary {...item} fromWhere={"SearchRepositories"} settingMode={true}/>}
             onEndReached={onEndReached}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={1}
           />
         </>
       </DismissKeyboard>

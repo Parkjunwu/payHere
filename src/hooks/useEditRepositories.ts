@@ -14,7 +14,7 @@ const useEditRepository = () => {
     return newRepositories;
   });
 
-  const deleteRepository = (id:string) => setRepositories((prevRepositories)=>{
+  const deleteRepository = (id:number) => setRepositories((prevRepositories)=>{
     const newRepositories = prevRepositories.filter(repository=>repository.id !== id);
     AsyncStorage.setItem(MY_REPOSITORIES, JSON.stringify(newRepositories));
     return newRepositories;

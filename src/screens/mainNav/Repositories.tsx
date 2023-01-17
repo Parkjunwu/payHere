@@ -45,7 +45,7 @@ const Repositories = (props:RepositoriesProps) => {
           }}
           data={repositories}
           renderItem={({item})=><RepositorySummary {...item} fromWhere="Repositories" settingMode={settingMode}/>}
-          keyExtractor={(item)=>item.id}
+          keyExtractor={(item)=>item.id+""}
         />
         {!settingMode && <BottomContainer>
           <GoToSearchBtn size="small" />

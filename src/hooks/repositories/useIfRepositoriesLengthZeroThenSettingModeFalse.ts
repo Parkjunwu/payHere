@@ -12,9 +12,7 @@ const useIfRepositoriesLengthZeroThenSettingModeFalse = ({
 }: useIfRepositoriesLengthZeroThenSettingModeFalseProps) => {
 
   useEffect(()=>{
-    if(repositories.length === 0) {
-      setSettingMode(false);
-    }
+    if(repositories.length === 0) setSettingMode(false);
   },[repositories]);
   
 };

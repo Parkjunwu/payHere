@@ -28,7 +28,11 @@ const Issues = (props:IssuesProps) => {
     loading,
     firstFetch,
     fetchMore,
-  } = useGithubQuery(getRepositoriesIssues,queryString,storedRepositoriesInfo);
+  } = useGithubQuery({
+    query: getRepositoriesIssues,
+    queryString,
+    storedRepositoriesInfo,
+  });
 
   useFetchFirstPageWhenAppStartOrRepositoriesChanged({
     firstFetch,
@@ -48,10 +52,10 @@ const Issues = (props:IssuesProps) => {
       <BaseSafeAreaView>
         <FlatList
           data={githubData}
-          keyExtractor={(item)=>item.id}
+          keyExtractor={(item)=>item.id+""}
           renderItem={({item}) => <IssueSummary {...item} />}
           onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={1}
         />
       </BaseSafeAreaView>
   );
